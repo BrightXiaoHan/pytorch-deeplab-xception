@@ -109,3 +109,9 @@ venv.bak/
 # ide
 .vscode
 .idea
+
+# dataset links
+links/
+
+# test_folder
+tests/
