@@ -175,6 +175,29 @@ class Trainer(object):
                 'best_pred': self.best_pred,
             }, is_best)
 
+    def inference(self):
+        self.model.eval()
+        tbar = tqdm(self.test_loader, desc="\r")
+
+        pred_list = []
+        for i, sample in enumerate(tbar):
+            image = sample['image']
+            if self.args.cuda:
+                image = image.cuda()
+            
+            with torch.no_grad():
+                output = self.model(image)
+
+            pred = output.data.cpu().numpy() 
+            pred = np.argmax(pred, axis=1)   
+            pred_list.append(pred_list)
+
+        if len(pred_list) != 0:
+            pred_list = np.concatenate(pred_list)
+            return pred_list
+        else:
+            raise Exception("There is no data in test set. Please check.")
+
 def main():
     parser = argparse.ArgumentParser(description="PyTorch DeeplabV3Plus Training")
     parser.add_argument('--backbone', type=str, default='resnet',
@@ -183,10 +206,10 @@ def main():
     parser.add_argument('--out-stride', type=int, default=16,
                         help='network output stride (default: 8)')
     parser.add_argument('--dataset', type=str, default='pascal',
-                        choices=['pascal', 'coco', 'cityscapes'],
+                        choices=['pascal', 'coco', 'cityscapes', "agriculture"],
                         help='dataset name (default: pascal)')
-    parser.add_argument('--use-sbd', action='store_true', default=True,
-                        help='whether to use SBD dataset (default: True)')
+    parser.add_argument('--use-sbd', action='store_true', default=False,
+                        help='whether to use SBD dataset (default: False)')
     parser.add_argument('--workers', type=int, default=4,
                         metavar='N', help='dataloader threads')
     parser.add_argument('--base-size', type=int, default=513,
@@ -246,6 +269,12 @@ def main():
                         help='evaluuation interval (default: 1)')
     parser.add_argument('--no-val', action='store_true', default=False,
                         help='skip validation during training')
+    
+    # dataset specific args
+    parser.add_argument("--agriculture-cropsize", type=int, default=512,
+        help="Image size cropped from large slide.")
+    parser.add_argument("--agriculture-cropstride", type=int, default=512,
+        help="Stride to crop images from large slide.")
 
     args = parser.parse_args()
     args.cuda = not args.no_cuda and torch.cuda.is_available()

@@ -2,13 +2,13 @@ class Path(object):
     @staticmethod
     def db_root_dir(dataset):
         if dataset == 'pascal':
-            return '/home/hanbing/ExtraDisk/GithubProject/deeplabtf/deeplab/datasets/pascal_voc_seg/VOCdevkit/VOC2012'  # folder that contains VOCdevkit/.
+            return 'links/PascalVoc'  # folder that contains VOCdevkit/.
         elif dataset == 'sbd':
-            return '/path/to/datasets/benchmark_RELEASE/'  # folder that contains dataset/.
+            return 'links/benchmark_RELEASE'  # folder that contains dataset/.
         elif dataset == 'cityscapes':
-            return '/path/to/datasets/cityscapes/'     # foler that contains leftImg8bit/
+            return 'links/cityscapes'     # foler that contains leftImg8bit/
         elif dataset == 'coco':
-            return '/path/to/datasets/coco/'
+            return 'links/coco'
         elif dataset == 'agriculture':
             return 'links/Agriculture'
         else:

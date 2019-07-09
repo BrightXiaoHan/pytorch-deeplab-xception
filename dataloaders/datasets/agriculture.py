@@ -1,5 +1,6 @@
 # encoding=utf-8
 import os
+import re
 import openslide
 import copy
 import cv2
@@ -31,7 +32,7 @@ class AgricutureSegmentation(Dataset):
         预处理。将原始图像裁剪并保存
         """
         images_dir = glob.glob(os.path.join(
-            self._base_dir, "*%s*" % self._split))[0]  # 原始数据集存储图像的目录
+            self._base_dir, "jingwei*%s*" % self._split))[0]  # 原始数据集存储图像的目录
 
         work_dir = os.path.join(self._base_dir, "%s_stride%d_imsize%d" % (
             self._split, self.stride, self.img_size))  # 生成的裁剪训练集图片存放目录
@@ -144,6 +145,7 @@ class AgricutureSegmentation(Dataset):
                  ):
         """
         Args:
+            args (Nametuple): 方法argparser.parse()的返回值 
             stride (int): 裁剪大图的步长
             img_size (int): 裁剪图片的大小
             base_dir (str, optional): 农业大脑数据集存储目录 Defaults to Path.db_root_dir("agriculture").
@@ -154,16 +156,17 @@ class AgricutureSegmentation(Dataset):
         self._split = split
         self.stride = stride
         self.img_size = img_size
+        self.args = args
 
         self._prepare_data()
 
-        self.images = [os.path.join(self._work_dir, name) for name in os.listdir(
+        self.images = [os.path.join(self._work_dir, "image", name) for name in os.listdir(
             os.path.join(self._work_dir, "image"))]
         self.images.sort()
 
-        self.self.categories = None
+        self.categories = None
         if split == "train":
-            self.categories = [os.path.join(self._work_dir, name) for name in os.listdir(
+            self.categories = [os.path.join(self._work_dir, "mask", name) for name in os.listdir(
                 os.path.join(self._work_dir, "mask"))]
             self.categories.sort()
             assert len(self.images) == len(
@@ -176,7 +179,7 @@ class AgricutureSegmentation(Dataset):
         _img, _target = self._make_img_gt_point_pair(index)
         sample = {'image': _img, 'label': _target}
 
-        if self.split == "train":
+        if self._split == "train":
             return self.transform_tr(sample)
         elif self._split == 'val':
             return self.transform_val(sample)
@@ -193,7 +196,9 @@ class AgricutureSegmentation(Dataset):
 
         else:
             _target = copy.deepcopy(_img)
-
+        
+        # 将标签转换为灰度图像
+        _target = _target.convert("L")
         return _img, _target
 
     def transform_tr(self, sample):
@@ -211,7 +216,6 @@ class AgricutureSegmentation(Dataset):
     def transform_val(self, sample):
 
         composed_transforms = transforms.Compose([
-            tr.FixScaleCrop(crop_size=self.args.crop_size),
             tr.Normalize(mean=(0.485, 0.456, 0.406),
                          std=(0.229, 0.224, 0.225)),
             tr.ToTensor()])
@@ -220,7 +224,6 @@ class AgricutureSegmentation(Dataset):
 
     def transform_ts(self, sample):
         composed_transforms = transforms.Compose([
-            tr.FixScaleCrop(crop_size=self.args.crop_size),
             tr.Normalize(mean=(0.485, 0.456, 0.406),
                          std=(0.229, 0.224, 0.225)),
             tr.ToTensor()])
@@ -243,7 +246,7 @@ class AgricutureSegmentation(Dataset):
 
         # hack here. 防止训练集和测试集之间产生冲突
         dev_dataset = copy.deepcopy(self)
-        dev_dataset._split = "dev"
+        dev_dataset._split = "val"
         dev.dataset = dev_dataset
 
         return train, dev
