@@ -9,7 +9,7 @@
 
 0. 克隆项目:
     ```Shell
-    git clone https://github.com/jfzhang95/pytorch-deeplab-xception.git
+    git clone https://github.com/BrightXiaoHan/pytorch-deeplab-xception
     cd pytorch-deeplab-xception
     ```
 
