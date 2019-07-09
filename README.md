@@ -1,42 +1,19 @@
-# pytorch-deeplab-xception
+# 2019 年县域农业大脑AI挑战赛
 
-**Update on 2018/12/06. Provide model trained on VOC and SBD datasets.**  
-
-**Update on 2018/11/24. Release newest version code, which fix some previous issues and also add support for new backbones and multi-gpu training. For previous code, please see in `previous` branch**  
-
-### TODO
-- [x] Support different backbones
-- [x] Support VOC, SBD, Cityscapes and COCO datasets
-- [x] Multi-GPU training
+### 简介
+这是一个基于pytorch的[DeepLab-V3-Plus](https://arxiv.org/pdf/1802.02611)实现。用于参加 [2019 年县域农业大脑AI挑战赛](https://tianchi.aliyun.com/competition/entrance/231717/introduction?spm=5176.12281957.1004.6.38b04c2aPDlxbu)
 
 
+### 安装
+建议在Anaconda，python3.6环境下运行
 
-| Backbone  | train/eval os  |mIoU in val |Pretrained Model|
-| :-------- | :------------: |:---------: |:--------------:|
-| ResNet    | 16/16          | 78.43%     | [google drive](https://drive.google.com/open?id=1NwcwlWqA-0HqAPk3dSNNPipGMF0iS0Zu) |
-| MobileNet | 16/16          | 70.81%     | [google drive](https://drive.google.com/open?id=1G9mWafUAj09P4KvGSRVzIsV_U5OqFLdt) |
-| DRN       | 16/16          | 78.87%     | [google drive](https://drive.google.com/open?id=131gZN_dKEXO79NknIQazPJ-4UmRrZAfI) |
-
-
-
-### Introduction
-This is a PyTorch(0.4.1) implementation of [DeepLab-V3-Plus](https://arxiv.org/pdf/1802.02611). It
-can use Modified Aligned Xception and ResNet as backbone. Currently, we train DeepLab V3 Plus
-using Pascal VOC 2012, SBD and Cityscapes datasets.
-
-![Results](doc/results.png)
-
-
-### Installation
-The code was tested with Anaconda and Python 3.6. After installing the Anaconda environment:
-
-0. Clone the repo:
+0. 克隆项目:
     ```Shell
     git clone https://github.com/jfzhang95/pytorch-deeplab-xception.git
     cd pytorch-deeplab-xception
     ```
 
-1. Install dependencies:
+1. 安装依赖包:
 
     For PyTorch dependency, see [pytorch.org](https://pytorch.org/) for more details.
 
@@ -44,12 +21,20 @@ The code was tested with Anaconda and Python 3.6. After installing the Anaconda 
     ```Shell
     pip install matplotlib pillow tensorboardX tqdm
     ```
-### Training
-Fellow steps below to train your model:
+### 训练
+按照以下步骤训练模型:
 
-0. Configure your dataset path in [mypath.py](https://github.com/jfzhang95/pytorch-deeplab-xception/blob/master/mypath.py).
+0. 配置你的数据集路径 [mypath.py](./mypath.py).
+目录结构如下
+    ```
+    ├── image_3_predict.png
+    ├── image_4_predict.png
+    ├── jingwei_round1_md5_20190619.txt
+    ├── jingwei_round1_test_a_20190619
+    ├── jingwei_round1_train_20190619
+    ```
 
-1. Input arguments: (see full input arguments via python train.py --help):
+1. 参数说明: (查看全部参数说明 python train.py --help):
     ```Shell
     usage: train.py [-h] [--backbone {resnet,xception,drn,mobilenet}]
                 [--out-stride OUT_STRIDE] [--dataset {pascal,coco,cityscapes}]
@@ -66,18 +51,11 @@ Fellow steps below to train your model:
 
     ```
 
-2. To train deeplabv3+ using Pascal VOC dataset and ResNet as backbone:
-    ```Shell
-    bash train_voc.sh
+2. 运行训练示例脚本
+    ```shell
+    bash agriculture_scripts/train_agriculture.sh
     ```
-3. To train deeplabv3+ using COCO dataset and ResNet as backbone:
+3. 生成提交结果
     ```Shell
-    bash train_coco.sh
+    python agriculture_scripts/inference.py
     ```    
-
-### Acknowledgement
-[PyTorch-Encoding](https://github.com/zhanghang1989/PyTorch-Encoding)
-
-[Synchronized-BatchNorm-PyTorch](https://github.com/vacancy/Synchronized-BatchNorm-PyTorch)
-
-[drn](https://github.com/fyu/drn)
