@@ -36,7 +36,7 @@ class Trainer(object):
                         sync_bn=args.sync_bn,
                         freeze_bn=args.freeze_bn)
 
-        train_params = [{'params': model.get_1x_lr_params(), 'lr': args.lr},
+        train_params = [{'params': model.get_1x_lr_params(), 'lr': args.lr * 10},
                         {'params': model.get_10x_lr_params(), 'lr': args.lr * 10}]
 
         # Define Optimizer
@@ -206,10 +206,8 @@ def main():
     parser.add_argument('--out-stride', type=int, default=16,
                         help='network output stride (default: 8)')
     parser.add_argument('--dataset', type=str, default='pascal',
-                        choices=['pascal', 'coco', 'cityscapes', "agriculture"],
+                        choices=["agriculture"],
                         help='dataset name (default: pascal)')
-    parser.add_argument('--use-sbd', action='store_true', default=False,
-                        help='whether to use SBD dataset (default: False)')
     parser.add_argument('--workers', type=int, default=4,
                         metavar='N', help='dataloader threads')
     parser.add_argument('--base-size', type=int, default=513,
