@@ -1,4 +1,4 @@
 python inference.py \
-    --checkpoint run/agriculture/deeplab-resnet/experiment_0/checkpoint.pth.tar \
+    --checkpoint run/agriculture/deeplab-resnet/model_best.pth.tar \
     --agriculture-cropsize 512
     --backbone resnet
