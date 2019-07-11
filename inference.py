@@ -35,7 +35,7 @@ def assemble():
 
     # 获取原数据集目录，工作目录，步长，图像大小等信息
     test_set=agriculture.AgricutureSegmentation(
-        None, parser.agriculture_cropsize, parser.agriculture_cropsize, split='test')
+        None, args.agriculture_cropsize, args.agriculture_cropsize, split='test')
     base_dir=test_set._base_dir
     work_dir=test_set._work_dir
     stride, imsize=re.match(
@@ -94,7 +94,7 @@ def inference():
     model.eval()
 
     kwargs={'num_workers': 0, 'pin_memory': True}
-    test_set=agriculture.AgricutureSegmentation(None, 512, 512, split='test')
+    test_set=agriculture.AgricutureSegmentation(None, args.agriculture_cropsize, args.agriculture_cropsize, split='test')
     test_loader=DataLoader(test_set, batch_size=4, shuffle=False, **kwargs)
 
     torch.set_grad_enabled(False)
